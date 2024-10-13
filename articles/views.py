@@ -9,6 +9,7 @@ from django.urls import reverse_lazy, reverse
 from .models import Article
 from .forms import CommentForm
 
+
 class CommentGet(DetailView):
     model = Article
     template_name = "article_detail.html"
@@ -17,6 +18,7 @@ class CommentGet(DetailView):
         context = super().get_context_data(**kwargs)
         context["form"] = CommentForm()
         return context
+
 
 class CommentPost(SingleObjectMixin, FormView):
     model = Article
@@ -38,6 +40,7 @@ class CommentPost(SingleObjectMixin, FormView):
         article = self.object
         return reverse("article_detail", kwargs={"pk": article.pk})
 
+
 class ArticleDetailView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         view = CommentGet.as_view()
@@ -47,9 +50,11 @@ class ArticleDetailView(LoginRequiredMixin, View):
         view = CommentPost.as_view()
         return view(request, *args, **kwargs)
 
+
 class ArticleListView(ListView):
     model = Article
     template_name = "article_list.html"
+
 
 class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Article
@@ -60,6 +65,7 @@ class ArticleUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         obj = self.get_object()
         return obj.author == self.request.user
 
+
 class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Article
     template_name = "article_delete.html"
@@ -68,6 +74,7 @@ class ArticleDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         obj = self.get_object()
         return obj.author == self.request.user
+
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
